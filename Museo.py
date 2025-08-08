@@ -1,7 +1,6 @@
 from Artista import Artista
 from Obra import Obra
 import requests
-import json
 
 class Museo:
     def start(self):
@@ -18,8 +17,11 @@ class Museo:
                 departamentos = self.listar_departamentos()
                 if departamentos:
                     try:
-                        seleccion_id = int(input("\n Introduce el ID del departamento que deseas explorar:"))
-                        self.buscar_obras_departamento(seleccion_id)
+                        seleccion_id = int(input("\n Introduce el ID del departamento que desea conocer:"))
+                        object_ids = self.buscar_obras_departamento(seleccion_id)
+                        if object_ids:
+                            self.mostrar_detalles(object_ids)
+            
                     except ValueError:
                         print("Entrada no valida. Por favor, introduce un numero:")
                         
@@ -28,30 +30,39 @@ class Museo:
                 if nacionalidades:
                     try:
                         seleccion_nacionalidad = input("\nIntroduce la nacionalidad del autor que deseas explorar: ")
-                        self.buscar_obras_nacionalidades(seleccion_nacionalidad)
+                        object_ids = self.buscar_obras_nacionalidades(seleccion_nacionalidad)
+                        if object_ids:
+                            self.mostrar_detalles(object_ids)
                     except ValueError:
                         print("Nacionalidad invalida")
                         
+            elif menu == "3":
+                nombre_autor = input("\nIntroduce el nombre del autor que deseas buscar: ")
+                object_ids = self.buscar_obras_autor(nombre_autor)
+                if object_ids:
+                    self.mostrar_detalles(object_ids)
+                    
+            elif menu == "4":
+                None
+                
+            elif menu == "5":
+                break
+            
+            else: 
+                print("El valor ingresado no está dentro de las opciones")
+                
     def buscar_obras_nacionalidades(self,nacionalidad):
-        
         link = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
         
         try:
             response = requests.get(link)
             data = response.json()
             object_ids = data.get("objectIDs", [])
-            
-            if not object_ids:
-                print("No se encontraron departamentos.")
-                return None
-            
-            print("Departamentos del Museo Metropolitano de Arte:")
-            for obj_id in object_ids [:20]:
-                    print(f" - ID de Obra: {obj_id}")
             return object_ids
         
         except:
             print("Se ha encontrado un error: ")
+            return None
     
                         
     def leer_nacionalidades(self):
@@ -59,7 +70,7 @@ class Museo:
         with open("nacionalidades.txt") as archivo:
             print("Nacionalidades disponibles")
             for linea in archivo:
-                nacionalidad = linea
+                nacionalidad = linea.strip()
                 print(f"- {nacionalidad}")
                 nacionalidades.append(nacionalidad)
         return nacionalidades
@@ -90,21 +101,13 @@ class Museo:
 
         try :
             response = requests.get(link)
-
             data = response.json()
             object_ids = data.get("objectIDs", [])
-
-            if not object_ids:
-                print("No se encontraron departamentos.")
-                return None
-            
-            print("Departamentos del Museo Metropolitano de Arte:")
-            for obj_id in object_ids[:20]:
-                print(f" - Id de Obra: {obj_id}")
             return object_ids
-        
+
         except:
             print("Se ha encontrado un error: ")
+            return None
             
     def buscar_obras_autor(self, nombre_autor):
         link = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nombre_autor}"
@@ -129,7 +132,29 @@ class Museo:
         for obj_id in object_ids[:20]:
             link = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obj_id}"
             
-            response = requests.get(link)
-            detalles_obra = response.json()
+            try :
+                response = requests.get(link)
+                detalles_obra = response.json()
+            
+                artista = Artista (
+nombre = detalles_obra.get("artistDisplayName"),
+nacionalidad = detalles_obra.get("artistNationality"),
+fecha_nacimiento = detalles_obra.get("artistEndDate"),
+fecha_muerte = detalles_obra.get("artistEndDate"))
+            
+                obra = Obra(
+id = detalles_obra.get("objectID"),
+titulo = detalles_obra.get("title"),
+artista = artista,
+departamento = detalles_obra.get("department"),
+tipo = detalles_obra.get("classification"),
+fecha_creacion = detalles_obra.get("objectDate"),
+imagen_url = detalles_obra.get("primaryImage"))
+            
+                obras_encontradas.append(obra)   
+                print(f" Id de la obra: {obra.id}, Título: {obra.titulo}, Nombre del autor: {obra.artista.nombre}")
+            
+            except:
+                print(f"No se pudieron obtener los detalles para la obra con ID: {obj_id}")
             
             

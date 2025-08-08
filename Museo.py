@@ -19,6 +19,47 @@ class Museo:
                         self.buscar_obras_departamento(seleccion_id)
                     except ValueError:
                         print("Entrada no valida. Por favor, introduce un numero:")
+                        
+            elif menu == "2":
+                nacionalidades = self.leer_nacionalidades()
+                if nacionalidades:
+                    try:
+                        seleccion_nacionalidad = input("\nIntroduce la nacionalidad del autor que deseas explorar: ")
+                        self.buscar_obras_nacionalidades(seleccion_nacionalidad)
+                    except ValueError:
+                        print("Nacionalidad invalida")
+                        
+    def buscar_obras_nacionalidades(self,nacionalidad):
+        
+        link = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
+        
+        try:
+            response = requests.get(link)
+            data = response.json()
+            object_ids = data.get("objectIDs", [])
+            
+            if not object_ids:
+                print("No se encontraron departamentos.")
+                return None
+            
+            print("Departamentos del Museo Metropolitano de Arte:")
+            for obj_id in object_ids [:40]:
+                    print(f" - ID de Obra: {obj_id}")
+            return object_ids
+        
+        except:
+            print("Se ha encontrado un error: ")
+    
+                        
+    def leer_nacionalidades(self):
+        nacionalidades = []
+        with open("nacionalidades.txt") as archivo:
+            print("Nacionalidades disponibles")
+            for linea in archivo:
+                nacionalidad = linea
+                print(f"- {nacionalidad}")
+                nacionalidades.append(nacionalidad)
+        return nacionalidades
     
     def listar_departamentos(self):
         link = "https://collectionapi.metmuseum.org/public/collection/v1/departments"

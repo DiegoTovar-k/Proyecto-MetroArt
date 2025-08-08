@@ -1,4 +1,7 @@
+from Artista import Artista
+from Obra import Obra
 import requests
+import json
 
 class Museo:
     def start(self):
@@ -102,3 +105,17 @@ class Museo:
         
         except:
             print("Se ha encontrado un error: ")
+            
+    def buscar_obras_autor(self, nombre_autor):
+        link = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nombre_autor}"
+        
+        try :
+            response = requests.get(link)
+            
+            data = response.json()
+            objects_ids = data.get("objectIDs, []")
+            return objects_ids
+        
+        except:
+            print("Se ha encontrado un error")
+            return None

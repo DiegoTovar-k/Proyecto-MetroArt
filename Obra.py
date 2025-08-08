@@ -17,4 +17,4 @@ El departamento es: {self.departamento}
 El tipo es: {self.tipo}
 La fecha de creacion es: {self.fecha_creacion}
 El url de la imagen es: {self.imagen_url}
-""")
+""")     

@@ -116,7 +116,7 @@ class Museo:
         """
         Busca los ID's de las obras por el departamento escogido por el usuario.
         """
-        link = f"https://collectionapi.metmuseum.org/public/collection/v1/departments={departamento_id}"
+        link = f"https://collectionapi.metmuseum.org/public/collection/v1/objects?departmentIds={departamento_id}"
 
         try :
             response = requests.get(link)

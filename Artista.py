@@ -1,4 +1,7 @@
 class Artista:
+    """
+    Representa un artista con toda su información básica.
+    """
     def __init__(self,nombre,nacionalidad,fecha_nacimiento,fecha_muerte):
         self.nombre = nombre
         self.nacionalidad = nacionalidad 
@@ -6,6 +9,9 @@ class Artista:
         self.fecha_muerte = fecha_muerte
 
     def show(self):
+        """
+        Muestra toda la información del artista.
+        """
         print(f'''
 El nombre completo del artista es: {self.nombre}
 La nacionalidad del artista es: {self.nacionalidad}

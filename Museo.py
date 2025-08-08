@@ -18,7 +18,7 @@ class Museo:
 3- Ver lista de obras por nombre del autor
 4- Mostrar detalles de la obra
 5- Salir
-""")
+--- """)
             if menu == "1":
                 departamentos = self.listar_departamentos()
                 if departamentos:
@@ -29,16 +29,17 @@ class Museo:
                             self.mostrar_detalles(object_ids)
             
                     except ValueError:
-                        print("Entrada no valida. Por favor, introduce un numero:")
+                        print("Entrada no valida. Por favor, introduce un número:")
                         
             elif menu == "2":
                 nacionalidades = self.leer_nacionalidades()
                 if nacionalidades:
                     try:
                         seleccion_nacionalidad = input("\nIntroduce la nacionalidad del autor que deseas explorar: ")
-                        object_ids = self.buscar_obras_nacionalidades(seleccion_nacionalidad)
-                        if object_ids:
-                            self.mostrar_detalles(object_ids)
+                        if seleccion_nacionalidad in nacionalidades:
+                            object_ids = self.buscar_obras_nacionalidades(seleccion_nacionalidad)
+                            if object_ids:
+                                self.mostrar_detalles(object_ids)
                     except ValueError:
                         print("Nacionalidad invalida")
                         
@@ -111,7 +112,7 @@ class Museo:
         except:
             print("Se ha encontrado un error: ")
 
-    def buscar_obras_departamento(self,departamento_id):
+    def buscar_obras_departamento(self, departamento_id):
         """
         Busca los ID's de las obras por el departamento escogido por el usuario.
         """
@@ -162,19 +163,19 @@ class Museo:
                 detalles_obra = response.json()
             
                 artista = Artista (
-nombre = detalles_obra.get("artistDisplayName"),
-nacionalidad = detalles_obra.get("artistNationality"),
-fecha_nacimiento = detalles_obra.get("artistEndDate"),
-fecha_muerte = detalles_obra.get("artistEndDate"))
+                nombre = detalles_obra.get("artistDisplayName"),
+                nacionalidad = detalles_obra.get("artistNationality"),
+                fecha_nacimiento = detalles_obra.get("artistEndDate"),
+                fecha_muerte = detalles_obra.get("artistEndDate"))
             
                 obra = Obra(
-id = detalles_obra.get("objectID"),
-titulo = detalles_obra.get("title"),
-artista = artista,
-departamento = detalles_obra.get("department"),
-tipo = detalles_obra.get("classification"),
-fecha_creacion = detalles_obra.get("objectDate"),
-imagen_url = detalles_obra.get("primaryImage"))
+                id = detalles_obra.get("objectID"),
+                titulo = detalles_obra.get("title"),
+                artista = artista,
+                departamento = detalles_obra.get("department"),
+                tipo = detalles_obra.get("classification"),
+                fecha_creacion = detalles_obra.get("objectDate"),
+                imagen_url = detalles_obra.get("primaryImage"))
             
                 obras_encontradas.append(obra)   
                 print(f" Id de la obra: {obra.id}, Título: {obra.titulo}, Nombre del autor: {obra.artista.nombre}")

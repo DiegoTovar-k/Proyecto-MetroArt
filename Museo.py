@@ -46,7 +46,7 @@ class Museo:
                 return None
             
             print("Departamentos del Museo Metropolitano de Arte:")
-            for obj_id in object_ids [:40]:
+            for obj_id in object_ids [:20]:
                     print(f" - ID de Obra: {obj_id}")
             return object_ids
         
@@ -99,7 +99,7 @@ class Museo:
                 return None
             
             print("Departamentos del Museo Metropolitano de Arte:")
-            for obj_id in object_ids[:40]:
+            for obj_id in object_ids[:20]:
                 print(f" - Id de Obra: {obj_id}")
             return object_ids
         
@@ -111,7 +111,6 @@ class Museo:
         
         try :
             response = requests.get(link)
-            
             data = response.json()
             objects_ids = data.get("objectIDs, []")
             return objects_ids
@@ -119,3 +118,18 @@ class Museo:
         except:
             print("Se ha encontrado un error")
             return None
+        
+    def mostrar_detalles(self, object_ids):
+        if not object_ids:
+            print("No se encontraron obras")
+            return
+        obras_encontradas = []
+        print("\n Listado de Obras ")
+        
+        for obj_id in object_ids[:20]:
+            link = f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{obj_id}"
+            
+            response = requests.get(link)
+            detalles_obra = response.json()
+            
+            

@@ -1,3 +1,4 @@
+import requests
 
 class Museo:
     def start(self):
@@ -10,3 +11,53 @@ class Museo:
 4- Mostrar detalles de la obra
 5- Salir
 """)
+            if menu == "1":
+                departamentos = self.listar_departamentos()
+                if departamentos:
+                    try:
+                        seleccion_id = int(input("\n Introduce el ID del departamento que deseas explorar:"))
+                        self.buscar_obras_departamento(seleccion_id)
+                    except ValueError:
+                        print("Entrada no valida. Por favor, introduce un numero:")
+    
+    def listar_departamentos(self):
+        link = "https://collectionapi.metmuseum.org/public/collection/v1/departments"
+
+        try:
+            response = requests.get(link)
+
+            data = response.json()
+            departamentos = data.get("departments", [])
+
+            if not departamentos:
+                print("No se encontraron departamentos.")
+                return None
+            
+            print("Departamentos del Museo Metropolitano de Arte:")
+            for departamento in departamentos:
+                print(f"ID: {departamento["departamentId"]} - Nombre: {departamento["displayName"]}")
+            return departamentos
+        
+        except:
+            print("Se ha encontrado un error: ")
+
+    def buscar_obras_departamento(self,departamento_id):
+        link = f"https://collectionapi.metmuseum.org/public/collection/v1/departments={departamento_id}"
+
+        try :
+            response = requests.get(link)
+
+            data = response.json()
+            object_ids = data.get("objectIDs", [])
+
+            if not object_ids:
+                print("No se encontraron departamentos.")
+                return None
+            
+            print("Departamentos del Museo Metropolitano de Arte:")
+            for obj_id in object_ids[:40]:
+                print(f" - Id de Obra: {obj_id}")
+            return object_ids
+        
+        except:
+            print("Se ha encontrado un error: ")

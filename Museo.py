@@ -1,6 +1,7 @@
 from Artista import Artista
 from Obra import Obra
 import requests
+import json
 
 class Museo:
     """
@@ -12,6 +13,7 @@ class Museo:
         Aquí se encuentra el menú con las diferentes opciones que podrá escoger el usuario.    
         """
         while True:
+            print()
             menu = input (""" Bienvenido a Metro Art. Seleccione la opción de su preferencia:
 1- Ver lista de obras por departamento
 2- Ver lista de obras por nacionalidad del autor
@@ -58,41 +60,11 @@ class Museo:
             else: 
                 print("El valor ingresado no está dentro de las opciones")
                 
-    def buscar_obras_nacionalidades(self,nacionalidad):
-        """
-        Busca los ID's de las obras por la nacionalidad escogida por el usuario.    
-        """
-        link = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
-        
-        try:
-            response = requests.get(link)
-            data = response.json()
-            object_ids = data.get("objectIDs", [])
-            return object_ids
-        
-        except:
-            print("Se ha encontrado un error: ")
-            return None
-    
-                        
-    def leer_nacionalidades(self):
-        """
-        Lee la lista de las nacionalidades desde el archivo "nacionalidades.txt"
-        """
-        nacionalidades = []
-        with open("nacionalidades.txt") as archivo:
-            print("Nacionalidades disponibles")
-            for linea in archivo:
-                nacionalidad = linea.strip()
-                print(f"- {nacionalidad}")
-                nacionalidades.append(nacionalidad)
-        return nacionalidades
-    
     def listar_departamentos(self):
         """
         Obtiene y muestra la lista de todos los departamento disponibles desde la API.
         """
-        link = "https://collectionapi.metmuseum.org/public/collection/v1/departments"
+        link = "https://collectionapi.metmuseum.org/public/collection/v1/departments" 
 
         try:
             response = requests.get(link)
@@ -111,7 +83,7 @@ class Museo:
         
         except:
             print("Se ha encontrado un error: ")
-
+            
     def buscar_obras_departamento(self, departamento_id):
         """
         Busca los ID's de las obras por el departamento escogido por el usuario.
@@ -128,6 +100,35 @@ class Museo:
             print("Se ha encontrado un error: ")
             return None
             
+    def leer_nacionalidades(self):
+        """
+        Lee la lista de las nacionalidades desde el archivo "nacionalidades.txt"
+        """
+        nacionalidades = []
+        with open("nacionalidades.txt") as archivo:
+            print("Nacionalidades disponibles")
+            for linea in archivo:
+                nacionalidad = linea.strip()
+                print(f"- {nacionalidad}")
+                nacionalidades.append(nacionalidad)
+        return nacionalidades
+    
+    def buscar_obras_nacionalidades(self,nacionalidad):
+        """
+        Busca los ID's de las obras por la nacionalidad escogida por el usuario.    
+        """
+        link = f"https://collectionapi.metmuseum.org/public/collection/v1/search?q={nacionalidad}"
+        
+        try:
+            response = requests.get(link)
+            data = response.json()
+            object_ids = data.get("objectIDs", [])
+            return object_ids
+        
+        except:
+            print("Se ha encontrado un error: ")
+            return None
+    
     def buscar_obras_autor(self, nombre_autor):
         """
         Busca los ID's de las obras por el autor escogido por el usuario.
@@ -153,6 +154,7 @@ class Museo:
             print("No se encontraron obras")
             return
         obras_encontradas = []
+        
         print("\n Listado de Obras ")
         
         for obj_id in object_ids[:20]:
@@ -163,19 +165,21 @@ class Museo:
                 detalles_obra = response.json()
             
                 artista = Artista (
-                nombre = detalles_obra.get("artistDisplayName"),
-                nacionalidad = detalles_obra.get("artistNationality"),
-                fecha_nacimiento = detalles_obra.get("artistEndDate"),
-                fecha_muerte = detalles_obra.get("artistEndDate"))
+                    nombre = detalles_obra.get("artistDisplayName"),
+                    nacionalidad = detalles_obra.get("artistNationality"),
+                    fecha_nacimiento = detalles_obra.get("artistBeginDate"),
+                    fecha_muerte = detalles_obra.get("artistEndDate")
+                )
             
                 obra = Obra(
-                id = detalles_obra.get("objectID"),
-                titulo = detalles_obra.get("title"),
-                artista = artista,
-                departamento = detalles_obra.get("department"),
-                tipo = detalles_obra.get("classification"),
-                fecha_creacion = detalles_obra.get("objectDate"),
-                imagen_url = detalles_obra.get("primaryImage"))
+                    id = detalles_obra.get("objectID"),
+                    titulo = detalles_obra.get("title"),
+                    artista = artista,
+                    departamento = detalles_obra.get("department"),
+                    tipo = detalles_obra.get("classification"),
+                    fecha_creacion = detalles_obra.get("objectDate"),
+                    imagen_url = detalles_obra.get("primaryImage")
+                )
             
                 obras_encontradas.append(obra)   
                 print(f" Id de la obra: {obra.id}, Título: {obra.titulo}, Nombre del autor: {obra.artista.nombre}")

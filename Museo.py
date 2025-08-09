@@ -78,7 +78,7 @@ class Museo:
             
             print("Departamentos del Museo Metropolitano de Arte:")
             for departamento in departamentos:
-                print(f"ID: {departamento['departamentId']} - Nombre: {departamento['displayName']}")
+                print(f"ID: {departamento['departmentId']} - Nombre: {departamento['displayName']}")
             return departamentos
         
         except:

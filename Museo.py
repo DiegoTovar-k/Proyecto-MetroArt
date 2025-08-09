@@ -78,7 +78,7 @@ class Museo:
             
             print("Departamentos del Museo Metropolitano de Arte:")
             for departamento in departamentos:
-                print(f"ID: {departamento["departamentId"]} - Nombre: {departamento["displayName"]}")
+                print(f"ID: {departamento['departamentId']} - Nombre: {departamento['displayName']}")
             return departamentos
         
         except:
@@ -138,7 +138,7 @@ class Museo:
         try :
             response = requests.get(link)
             data = response.json()
-            objects_ids = data.get("objectIDs, []")
+            objects_ids = data.get("objectIDs", [])
             return objects_ids
         
         except:
